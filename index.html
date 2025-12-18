@@ -2,332 +2,648 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>MechFrame | Industrial Data, Supercharged</title>
+  <title>MechFrame Inc. | Context Layers for Industrial AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #050816;
-      color: #f5f5f5;
+    :root{
+      --bg: #ffffff;
+      --text: #0b0f1a;
+      --muted: #5b6477;
+      --border: rgba(15, 23, 42, 0.12);
+      --card: rgba(255, 255, 255, 0.72);
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+
+      /* subtle neon accents */
+      --a1: #22d3ee; /* cyan */
+      --a2: #6366f1; /* indigo */
+      --a3: #a855f7; /* violet */
+      --a4: #34d399; /* green */
+
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-pill: 999px;
     }
-    header {
-      padding: 24px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+
+    /* soft neon background */
+    .bg-glow{
+      position: fixed;
+      inset: -40vh -30vw auto -30vw;
+      height: 90vh;
+      pointer-events: none;
+      z-index: -2;
+      background:
+        radial-gradient(closest-side at 25% 35%, rgba(34, 211, 238, 0.18), transparent 65%),
+        radial-gradient(closest-side at 55% 25%, rgba(99, 102, 241, 0.16), transparent 68%),
+        radial-gradient(closest-side at 70% 55%, rgba(168, 85, 247, 0.12), transparent 70%),
+        radial-gradient(closest-side at 35% 75%, rgba(52, 211, 153, 0.10), transparent 70%);
+      filter: blur(10px);
+    }
+
+    .noise{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+    }
+
+    header{
       position: sticky;
       top: 0;
+      z-index: 50;
       backdrop-filter: blur(12px);
-      background: rgba(5, 8, 22, 0.9);
-      z-index: 10;
+      background: rgba(255, 255, 255, 0.75);
+      border-bottom: 1px solid var(--border);
     }
-    .logo {
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 14px;
-    }
-    .badge {
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(129, 140, 248, 0.6);
-      color: #a5b4fc;
-    }
-    main {
-      max-width: 960px;
+
+    .nav{
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 32px 16px 64px;
-    }
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-      gap: 32px;
-      align-items: center;
-      margin-top: 40px;
-    }
-    @media (max-width: 800px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-    }
-    .hero-title {
-      font-size: clamp(32px, 4vw, 44px);
-      line-height: 1.1;
-      margin-bottom: 16px;
-    }
-    .hero-subtitle {
-      font-size: 16px;
-      color: #9ca3af;
-      margin-bottom: 24px;
-      max-width: 36rem;
-    }
-    .hero-kicker {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #a5b4fc;
-      margin-bottom: 8px;
-    }
-    .pill-row {
+      padding: 18px 18px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 24px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
-    .pill {
+
+    .brand{
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .brand-title{
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 15px;
+      color: #000; /* per your request */
+    }
+
+    .brand-sub{
+      font-size: 12px;
+      color: var(--muted);
+      border-left: 1px solid var(--border);
+      padding-left: 10px;
+    }
+
+    .nav-actions{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip{
       font-size: 12px;
       padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      color: #e5e7eb;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(255,255,255,0.65);
     }
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #6366f1, #22d3ee);
-      border: none;
-      border-radius: 999px;
-      padding: 10px 20px;
+
+    .btn{
+      border-radius: var(--radius-pill);
+      padding: 10px 16px;
       font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      color: #0b1020;
+      font-weight: 650;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.75);
+      color: var(--text);
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
-    }
-    .btn-secondary {
-      background: transparent;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      padding: 10px 18px;
-      font-size: 14px;
       cursor: pointer;
-      color: #e5e7eb;
-      text-decoration: none;
+      transition: transform .08s ease, box-shadow .15s ease, background .15s ease;
     }
-    .cta-note {
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 22px rgba(15, 23, 42, 0.10); }
+    .btn:active{ transform: translateY(0px); }
+
+    .btn-primary{
+      border: none;
+      color: #071018;
+      background:
+        linear-gradient(135deg, rgba(34, 211, 238, 0.95), rgba(99, 102, 241, 0.92));
+      box-shadow: 0 16px 35px rgba(34, 211, 238, 0.18);
+    }
+
+    main{
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 34px 18px 76px;
+    }
+
+    .hero{
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 26px;
+      align-items: start;
+      margin-top: 24px;
+    }
+    @media (max-width: 900px){
+      .hero{ grid-template-columns: 1fr; }
+    }
+
+    .kicker{
       font-size: 12px;
-      color: #6b7280;
-    }
-    .hero-card {
-      border-radius: 18px;
-      background: radial-gradient(circle at top, #1d2342, #050816 60%);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      padding: 20px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.8);
-    }
-    .card-title {
-      font-size: 14px;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: #9ca3af;
-      margin-bottom: 16px;
+      letter-spacing: 0.18em;
+      color: rgba(99, 102, 241, 0.95);
+      font-weight: 800;
+      margin-bottom: 10px;
     }
-    .metric-row {
+
+    h1{
+      font-size: clamp(34px, 4.2vw, 52px);
+      line-height: 1.06;
+      margin: 0 0 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle{
+      margin: 0 0 18px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 44rem;
+    }
+
+    .pill-row{
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 13px;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0 20px;
     }
-    .metric-label {
-      color: #9ca3af;
+
+    .pill{
+      font-size: 12px;
+      padding: 7px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.72);
+      color: rgba(15, 23, 42, 0.78);
     }
-    .metric-value {
-      font-weight: 600;
+
+    .cta-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 10px;
     }
-    .sparkline {
-      height: 80px;
-      margin: 16px 0 8px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(45, 212, 191, 0.1));
+
+    .note{
+      margin-top: 12px;
+      font-size: 12px;
+      color: rgba(91, 100, 119, 0.95);
+    }
+
+    /* right card */
+    .card{
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 16px;
       position: relative;
       overflow: hidden;
     }
-    .sparkline::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(120deg, rgba(96, 165, 250, 0.5), rgba(45, 212, 191, 0.1)),
-        linear-gradient(180deg, transparent 60%, rgba(15, 23, 42, 0.9));
-      mix-blend-mode: screen;
-      opacity: 0.9;
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-40% -20% auto -20%;
+      height: 70%;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(34, 211, 238, 0.22), transparent 55%),
+        radial-gradient(circle at 60% 20%, rgba(99, 102, 241, 0.18), transparent 58%),
+        radial-gradient(circle at 70% 55%, rgba(168, 85, 247, 0.12), transparent 62%);
+      filter: blur(12px);
+      pointer-events:none;
     }
-    .sparkline-footer {
-      font-size: 11px;
-      color: #6b7280;
+
+    .card-title{
+      position: relative;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: rgba(91, 100, 119, 0.95);
+      margin-bottom: 14px;
+      font-weight: 800;
+    }
+
+    .metric{
+      position: relative;
       display: flex;
       justify-content: space-between;
+      gap: 14px;
+      font-size: 13px;
+      padding: 8px 0;
+      border-top: 1px solid rgba(15, 23, 42, 0.08);
     }
-    section {
+    .metric:first-of-type{ border-top: none; padding-top: 0; }
+    .metric .label{ color: rgba(91, 100, 119, 0.98); }
+    .metric .value{ font-weight: 750; }
+
+    .spark{
+      position: relative;
+      height: 92px;
+      border-radius: 14px;
+      margin: 14px 0 8px;
+      border: 1px solid rgba(15, 23, 42, 0.10);
+      background:
+        linear-gradient(135deg, rgba(34, 211, 238, 0.10), rgba(99, 102, 241, 0.08), rgba(168, 85, 247, 0.06));
+      overflow: hidden;
+    }
+
+    .spark::after{
+      content:"";
+      position:absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          90deg,
+          rgba(15,23,42,0.10) 0px,
+          rgba(15,23,42,0.10) 1px,
+          transparent 1px,
+          transparent 14px
+        );
+      opacity: 0.15;
+    }
+
+    .spark-footer{
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: rgba(91, 100, 119, 0.95);
+    }
+
+    section{
       margin-top: 56px;
     }
-    h2 {
+
+    h2{
       font-size: 22px;
-      margin-bottom: 8px;
+      margin: 0 0 10px;
+      letter-spacing: -0.01em;
     }
-    .section-subtitle {
+
+    .section-subtitle{
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 50rem;
       font-size: 14px;
-      color: #9ca3af;
-      margin-bottom: 24px;
-      max-width: 40rem;
     }
-    .feature-grid {
+
+    .grid{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
     }
-    .feature-card {
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      padding: 16px 18px;
-      background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.1), transparent 60%);
+
+    .feature{
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.70);
+      padding: 16px 16px 15px;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
     }
-    .feature-title {
+
+    .feature h3{
+      margin: 0 0 8px;
       font-size: 15px;
-      margin-bottom: 6px;
+      letter-spacing: -0.01em;
     }
-    .feature-body {
+
+    .feature p{
+      margin: 0;
+      color: var(--muted);
       font-size: 13px;
-      color: #9ca3af;
+      line-height: 1.55;
     }
-    footer {
-      border-top: 1px solid rgba(31, 41, 55, 1);
-      margin-top: 48px;
-      padding: 16px 0 0;
+
+    footer{
+      margin-top: 54px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
       font-size: 12px;
-      color: #6b7280;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .link{
+      color: rgba(99, 102, 241, 0.95);
+      text-decoration: none;
+    }
+    .link:hover{ text-decoration: underline; }
+
+    /* --- login modal (template) --- */
+    .modal-backdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.32);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 100;
+    }
+    .modal{
+      width: min(480px, 100%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25);
+      overflow: hidden;
+    }
+    .modal-head{
+      padding: 16px 16px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .modal-title{
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: #000;
+    }
+    .modal-close{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .modal-body{
+      padding: 14px 16px 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .form{
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .field{
+      display: grid;
+      gap: 6px;
+    }
+    label{
+      font-size: 12px;
+      color: rgba(91, 100, 119, 0.95);
+      font-weight: 650;
+    }
+    input{
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.95);
+      font-size: 14px;
+      outline: none;
+    }
+    input:focus{
+      border-color: rgba(99, 102, 241, 0.55);
+      box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.12);
+    }
+    .form-row{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+    .tiny{
+      font-size: 11px;
+      color: rgba(91, 100, 119, 0.95);
     }
   </style>
 </head>
+
 <body>
+  <div class="bg-glow"></div>
+  <div class="noise"></div>
+
   <header>
-    <div class="logo">MECHFRAME</div>
-    <div class="badge">Private Alpha · Industrial Data Copilot</div>
+    <div class="nav">
+      <div class="brand">
+        <div class="brand-title">MECHFRAME INC.</div>
+        <div class="brand-sub">Industrial context layers • R&amp;D</div>
+      </div>
+
+      <div class="nav-actions">
+        <span class="chip">Private R&amp;D Track</span>
+        <a class="btn" href="#approach">Approach</a>
+        <a class="btn" href="#roadmap">Roadmap</a>
+        <button class="btn btn-primary" id="openLogin">Login (soon) →</button>
+      </div>
+    </div>
   </header>
+
   <main>
     <section class="hero">
       <div>
-        <div class="hero-kicker">From historian chaos to clear answers</div>
-        <h1 class="hero-title">Ask your plant how it ran last night.</h1>
-        <p class="hero-subtitle">
-          MechFrame plugs into your OPC&nbsp;UA data, batches it to Parquet, and gives process engineers
-          an LLM-native workspace. Instead of fighting spreadsheets and slow historians, you just ask:
-          <em>“Why did steam spike on Machine&nbsp;3 at 2&nbsp;AM?”</em>
+        <div class="kicker">Teach LLMs how your plant is actually wired</div>
+        <h1>Context layers that let industrial AI reason — not guess.</h1>
+        <p class="subtitle">
+          MechFrame is an R&amp;D effort to build <strong>LLM-ready context layers</strong> for industrial plants:
+          control loops, tag semantics, process topology, and rollups — so a model can answer engineering questions
+          with traceability instead of hand-wavy “AI vibes”.
         </p>
 
         <div class="pill-row">
-          <span class="pill">OPC&nbsp;UA Edge Collector</span>
-          <span class="pill">Parquet-first Data Lake</span>
-          <span class="pill">LLM-native Analytics</span>
-          <span class="pill">Built by a process engineer</span>
+          <span class="pill">Tag semantics (units, ranges, aliases)</span>
+          <span class="pill">Control loops (SP/PV/CV, mode, limits)</span>
+          <span class="pill">Topology graphs (nodes/edges)</span>
+          <span class="pill">Rollups (1h/12h/24h snapshots)</span>
+          <span class="pill">OPC UA edge collector → Parquet</span>
         </div>
 
         <div class="cta-row">
-          <a class="btn-primary" href="mailto:barry@mechframe.com?subject=MechFrame%20early%20access">
-            Request early access →
+          <a class="btn btn-primary" href="mailto:barry@mechframe.com?subject=MechFrame%20R%26D%20trial%20access">
+            Request trial access →
           </a>
-          <a class="btn-secondary" href="#vision">Read the vision</a>
+          <a class="btn" href="#approach">How it works</a>
         </div>
-        <div class="cta-note">
-          No salespeople. You’ll talk directly with the builder, walk through your tags, and see what MechFrame could do at your mill.
+
+        <div class="note">
+          Early access is hands-on: we map your tags, loops, and process graph, then test real questions against your data.
+          No fluff — just engineering.
         </div>
       </div>
 
-      <div class="hero-card">
-        <div class="card-title">Live plant snapshot · Demo</div>
-        <div class="metric-row">
-          <span class="metric-label">Tags ingested</span>
-          <span class="metric-value">42,318</span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Query response</span>
-          <span class="metric-value">&lt; 2.1 s</span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Last batch</span>
-          <span class="metric-value">10 sec ago</span>
-        </div>
-        <div class="sparkline"></div>
-        <div class="sparkline-footer">
-          <span>Simulated OPC&nbsp;UA stream</span>
-          <span>Parquet · LLM-ready</span>
-        </div>
-      </div>
-    </section>
+      <div class="card">
+        <div class="card-title">R&amp;D snapshot • concept demo</div>
 
-    <section id="vision">
-      <h2>The problem it solves</h2>
-      <p class="section-subtitle">
-        Process data is locked in historians, Excel exports, and tribal knowledge. Every deep question becomes a
-        half-day project: pulling data, cleaning it, plotting it, and trying not to crash Excel in the process.
-        MechFrame removes the friction between “I wonder...” and the answer.
-      </p>
+        <!-- Tag count removed per your request -->
+        <div class="metric">
+          <span class="label">Reasoning target</span>
+          <span class="value">Traceable answers</span>
+        </div>
+        <div class="metric">
+          <span class="label">Interface</span>
+          <span class="value">Chat + citations</span>
+        </div>
+        <div class="metric">
+          <span class="label">Data plane</span>
+          <span class="value">Edge → Parquet → Query</span>
+        </div>
 
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="feature-title">Edge OPC&nbsp;UA collector</div>
-          <div class="feature-body">
-            Lightweight Linux agent that subscribes to your OPC&nbsp;UA server, batches to Parquet,
-            and ships data securely to your MechFrame cloud workspace.
-          </div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-title">Parquet-first, not silo-first</div>
-          <div class="feature-body">
-            Data is stored columnar in open formats, optimized for analytics and LLMs
-            instead of trapped in one vendor’s historian UI.
-          </div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-title">LLM-native interface</div>
-          <div class="feature-body">
-            Ask questions in plain language: “Show rush-draw vs. breaks last month”
-            or “Which loops ran in manual for more than 4 hours yesterday?”
-          </div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-title">Built by someone who’s run a mill</div>
-          <div class="feature-body">
-            MechFrame is being built by a process engineer who has lived inside PARCview,
-            PI, and broken Excel files. This isn’t a generic BI toy — it’s designed for mills.
-          </div>
+        <div class="spark"></div>
+
+        <div class="spark-footer">
+          <span>Context layers: loops • topology • semantics</span>
+          <span>Goal: less “prompting”, more “grounding”</span>
         </div>
       </div>
     </section>
 
-    <section>
-      <h2>Where it’s heading</h2>
+    <section id="approach">
+      <h2>What we’re building</h2>
       <p class="section-subtitle">
-        The long-term vision is a full MechFrame workspace: secure edge collectors,
-        a cloud data lake, and an LLM “copilot” tuned for process engineering.
-        Think: notebooks, dashboards, alerts, and conversational root-cause investigations — all on top
-        of your real plant data.
+        Most “AI for manufacturing” fails because models don’t know what tags mean, how equipment connects,
+        which signals belong to a loop, or what “normal” looks like. MechFrame’s bet is that the right
+        context layer structure makes an LLM behave more like a junior process engineer: curious, grounded,
+        and falsifiable.
       </p>
+
+      <div class="grid">
+        <div class="feature">
+          <h3>Semantic tag catalog</h3>
+          <p>Units, ranges, descriptions, aliases, and “what this signal actually represents” — so the model stops mixing up flow, level, and valve position.</p>
+        </div>
+        <div class="feature">
+          <h3>Control-loop awareness</h3>
+          <p>SP/PV/CV relationships, mode history (auto/manual), limits, and loop groupings — enabling loop-centric questions instead of raw tag hunting.</p>
+        </div>
+        <div class="feature">
+          <h3>Process topology graph</h3>
+          <p>Nodes/edges that encode equipment connectivity and influence paths — so “upstream/downstream” and cause-effect reasoning becomes possible.</p>
+        </div>
+        <div class="feature">
+          <h3>Rollups for fast answers</h3>
+          <p>Precomputed windows (like 1h/12h/24h) for quick comparisons and “what changed” queries without grinding through full-resolution history.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <h2>Roadmap</h2>
       <p class="section-subtitle">
-        If you want to be part of the first plants to trial it, reach out below.
+        The near-term goal is a trial portal where a small number of plants can safely test the system.
+        Login is a placeholder today — designed so we can later plug in real auth + a chat UI.
       </p>
+
+      <div class="grid">
+        <div class="feature">
+          <h3>Phase 1 — Trial portal</h3>
+          <p>Static login template → authenticated chat UI → per-user sessions and audit logs.</p>
+        </div>
+        <div class="feature">
+          <h3>Phase 2 — Grounded responses</h3>
+          <p>Every answer links back to tags/loops/rollups used, with “why” and “what to check next”.</p>
+        </div>
+        <div class="feature">
+          <h3>Phase 3 — Plant playbooks</h3>
+          <p>Reusable templates for common areas (stock prep, paper machine, evaporators, recaust) to speed up onboarding.</p>
+        </div>
+        <div class="feature">
+          <h3>Phase 4 — Alerts + investigations</h3>
+          <p>Detect drift, instability, and manual operation patterns, then auto-build an investigation trail.</p>
+        </div>
+      </div>
     </section>
 
     <footer>
-      <p>© <span id="year"></span> MechFrame. All rights reserved.</p>
-      <p>Contact: <a href="mailto:barry@mechframe.com" style="color:#a5b4fc;">barry@mechframe.com</a></p>
+      <div>© <span id="year"></span> MechFrame Inc. All rights reserved.</div>
+      <div>
+        Contact:
+        <a class="link" href="mailto:barry@mechframe.com">barry@mechframe.com</a>
+      </div>
     </footer>
   </main>
 
+  <!-- Login modal template -->
+  <div class="modal-backdrop" id="loginModal" role="dialog" aria-modal="true" aria-label="Login">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title">MECHFRAME INC. • Trial Login</div>
+        <button class="modal-close" id="closeLogin" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div>
+          This is a <strong>template</strong> for the upcoming trial portal. No accounts are active yet.
+          If you want access when it’s ready, request early access and we’ll onboard your plant context safely.
+        </div>
+
+        <form class="form" onsubmit="event.preventDefault(); alert('Login is not active yet. This is a UI template.');">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="you@company.com" autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+          </div>
+
+          <div class="form-row">
+            <button class="btn btn-primary" type="submit">Sign in →</button>
+            <span class="tiny">
+              Don’t have access? <a class="link" href="mailto:barry@mechframe.com?subject=MechFrame%20Trial%20Request">Request trial</a>
+            </span>
+          </div>
+
+          <div class="tiny" style="margin-top:6px;">
+            Future: SSO, per-user workspaces, audit logs, and rate-limited API access.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    const modal = document.getElementById("loginModal");
+    const openBtn = document.getElementById("openLogin");
+    const closeBtn = document.getElementById("closeLogin");
+
+    function openModal(){ modal.style.display = "flex"; }
+    function closeModal(){ modal.style.display = "none"; }
+
+    openBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
   </script>
 </body>
 </html>
